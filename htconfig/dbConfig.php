@@ -1,7 +1,7 @@
 <?php
 
 session_start();
-if (strtoupper(substr(gethostname(), 0, 6)) === 'NOSOUP') {
+if (strtoupper(substr(gethostname(), 0, 6)) === 'GARTH') {
     //echo 'This is a server using Windows!';
     $db = array(
         'hostname' => 'localhost',
