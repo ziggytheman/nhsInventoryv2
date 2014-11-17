@@ -15,6 +15,7 @@
 echo '<li id="active"><a href="#">Home</a></li>' ;
 
 if (isset($accessLevel) AND $accessLevel >= 21) {
+    echo '<li><a href="index.php?content=assetInventoryInitial">Inventory</a></li>';
     echo '<li><a href="index.php?content=assetSearch">Search</a></li>';
     echo '<li><a href="index.php?content=assetList">List</a></li>';
     echo '<li><a href="index.php?content=assetAdd">Add</a></li>';

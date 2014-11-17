@@ -35,7 +35,7 @@ if ($dbSuccess) {
         $userID = filter_input(INPUT_COOKIE, 'userID', FILTER_SANITIZE_SPECIAL_CHARS);
         $status = filter_input(INPUT_GET, 'status', FILTER_SANITIZE_SPECIAL_CHARS);
 
-        if (isset($status) AND ($status == "logout")) {
+        if (isset($status) AND ( $status == "logout")) {
             setcookie("loginAuthorised", "", time() - 7200, "/");
             header("Location: index.php");
         } else {
@@ -44,7 +44,7 @@ if ($dbSuccess) {
             $menuFile = 'includes/tp_nhiMenu.php';
 
             $contentCode = filter_input(INPUT_GET, 'content', FILTER_SANITIZE_SPECIAL_CHARS);
-  
+
             //  DO SOMETHING depending on the $contentCode.  
             //		update code:   0905 Content management 
             switch ($contentCode) {
@@ -57,25 +57,28 @@ if ($dbSuccess) {
                 case "assetAdd":
                     $contentFile = "includes/add.php";
                     break;
-     //           case "assetMaintenance":
-     //               $contentFile = "includes/Maintenance.php";
-     //               break;
+                case "assetInventory":
+                    $contentFile = "includes/assetInventory.php";
+                    break;
+                case "assetInventoryInitial":
+                    $contentFile = "includes/assetInventoryInitial.php";
+                    break;
                 case "assetMaintenanceHistory":
                     $contentFile = "includes/mainhistory.php";
                     break;
-                case "assetMaintenanceInsert":    
+                case "assetMaintenanceInsert":
                     $contentFile = "includes/maininsert.php";
                     break;
                 case "assetCheckIn":
                     $contentFile = "includes/check-in.php";
                     break;
                 case "assetCheckOut":
-                   // $contentFile = "includes/check-out.php";
+                    // $contentFile = "includes/check-out.php";
                     $contentFile = "includes/testcheckout.php";
                     break;
                 case "assetCheckInOut":
                     $contentFile = "includes/checkinout.php";
-                    break;                
+                    break;
                 case "assetCheckHistory":
                     $contentFile = "includes/checkhistory.php";
                     break;
@@ -106,7 +109,7 @@ if ($dbSuccess) {
 
         $username = filter_input(INPUT_POST, 'username', FILTER_SANITIZE_SPECIAL_CHARS);
         $password = filter_input(INPUT_POST, 'password', FILTER_SANITIZE_SPECIAL_CHARS);
-        
+
         if (userAuthorised($username, $password, $dbSelected)) {
             header("Location: index.php");
         } else {
@@ -122,8 +125,8 @@ if ($dbSuccess) {
     <head>
         <meta charset="UTF-8">
         <title>NHI</title>
-        <link rel="stylesheet" type="text/css" href="css/reset.css" /> 
-        <link rel="stylesheet" type="text/css" href="css/nhi.css" /> 
+        <link rel="stylesheet" type="text/css" href="css/reset.css" > 
+        <link rel="stylesheet" type="text/css" href="css/nhi.css" > 
 
         <!-- DataTables CSS -->
         <link rel="stylesheet" type="text/css" 
@@ -136,9 +139,10 @@ if ($dbSuccess) {
         <!-- DataTables -->
         <script type="text/javascript" charset="utf-8" 
         src="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.min.js"></script>
-        <script src="js/nhi.js"></script>
+        <script type="text/javascript" charset="utf-8" src="js/nhi.js"></script>
     </head>
     <body>
+
     <header>
         <h1 id="pageHeader">Inventory</h1>
         <h2 id="pageTitle"></h2>
@@ -146,7 +150,7 @@ if ($dbSuccess) {
             <p><span id="returnMsg"></span></p>
         </div>
 
-    </header>            
+    </header> 
     <div class="lhs_menu">
 
         <ul>
@@ -162,7 +166,7 @@ if ($dbSuccess) {
         if (file_exists($contentFile)) {
             include($contentFile);
         }
-        
+
         if (!empty($contentMsg)) {
             echo $contentMsg;
         }
@@ -172,15 +176,16 @@ if ($dbSuccess) {
 
 
     <footer>
-
+        <div id="message">
+            <p><span id="errorMsg"></span></p>
+        </div>
     </footer><!-- end footer -->
 
 </body>
 </html>
 <script>
-    $(document).ready(function() {
-
+    $(document).ready(function () {
         document.getElementById('returnMsg').innerHTML = "<?php echo $returnMsg; ?>";
-
+        document.getElementById('errorMsg').innerHTML = "<?php echo $errorMsg; ?>";
     });
 </script>

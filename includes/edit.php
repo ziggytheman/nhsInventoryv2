@@ -124,7 +124,7 @@ if ($dbSuccess) {
             <p><label class="field" for="serialno">Serial Number</label>
                 <input type="text" name="serialno" id="serialno" class="textbox-300" autofocus value="<?php echo $serialno; ?>"/>
                 <span class="error"><?php echo $serialnoError; ?></span>
-                <label class="field" for="co_info">Checkout</label>
+                <label class="field" for="co_info">Checked Out?</label>
                 <input type="text" name="co_info" id="co_info" class="textbox-200" readonly value="<?php echo $checkout_info; ?>" style="<?php echo $coStyle; ?>"/>
             </p>
 

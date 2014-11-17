@@ -1,55 +1,71 @@
-<form method="post" action="index.php?content=assetTestCheckout" >
+<?php
+include('includes/fn_insert_validations.php');
+include('includes/fn_isCheckout.php');
+include('includes/fn_doesExist.php');
+include('includes/fn_getAssetInfo.php');
+include('includes/fn_getCount.php');
+$returnMsg = "Enter Room ";
+
+$styleError = "background-color:red;border-color:red";
+$barcode = array_fill(0, 10, "");
+$data = array_fill(0, 10, "");
+$remove = array_fill(0, 10, "");
+$room = $person = "";
+
+if ($dbSuccess) {
+
+    if ($_SERVER["REQUEST_METHOD"] === "GET") {
+        //select barcode
+     /*   if (isset($_GET["room"]) && strlen(clean_input($_GET["room"]) > 0)) {
+            $barcode[0] = clean_input($_GET["barcode"]);
+            $data[0] = getAssetInfo($dbSelected, $barcode[0]);
+            //populate data based on what is already their
+      
+          }
+      * 
+      */
+    }
+    if ($_SERVER["REQUEST_METHOD"] === "POST") {
+        // if(isset(filter_input(INPUT_POST,'barcode[]',FILTER_SANITIZE_SPECIAL_CHARS)))
+        $room = filter_input(input_post,'room',FILTER_SANITIZE_SPECIAL_CHARS);
+        $remove = filter_input(input_post,'remove',FILTER_SANITIZE_SPECIAL_CHARS);
+       
+
+        print_r($room);
+        print_r($barcode);
+        print_r($remove);
+        $hasError = FALSE;
+    }
+}
+?>
+
+<form method="post" action="index.php?content=assetInventory" >
     <div class="fieldSet">
         <fieldset>
-            <legend>Asset Check-Out Information</legend>
+            <legend>Search Criteria</legend>
             <div class="column1">
                 <p>
-                    <label class="field" for="coDate">Check-out Date</label>
-                    <input type="date" name="coDate" id="coDate" class="textbox-150" value="<?php echo $coDate; ?>" style="<?php echo $coDateError; ?>"/>
-
-                </p>
-                <p>
-                    <label class="field" for="coName">Name</label>
-					<input type="text" name="coName" id="coName" class="textbox-150" value="<?php echo $coName; ?>" style="<?php echo $coNameError; ?>"/>
-				<!--	<input id="coName" name="coName" type="text" list="coName" class="textbox-150"  />
-					<datalist id="coName">
-						//<?php echo $employeeDropDown; ?>
-					</datalist>
-					-->
-                    
-				
-                </p>
-                <p>
-                    <label class="field" for="coTelephone">Telephone</label>
-                    <input type="tel" name="coTelephone" id="coTelephone" class="textbox-150" value="<?php echo $coTelephone; ?>" style="<?php echo $coTelephoneError; ?>"/>
-
+                    <label class="field" for="room">Room</label>
+                    <input type="text" name="room" id="room" class="textbox-150" value="<?php echo $room; ?>" style="<?php echo $coRoomError; ?>"/>
                 </p>
             </div>
             <div class="column2">
                 <p>
-                    <label class="field" for="coEmail">e-Mail</label>
-                    <input type="email" name="coEmail" id="coEmail" class="textbox-150" value="<?php echo $coEmail; ?>" style="<?php echo $coEmailError; ?>"/>
+                    <label class="field" for="person">Person</label>
+                    <input type="text" name="person" id="person" class="textbox-150" value="<?php echo $person; ?>" style="<?php echo $coPersonError; ?>"/>
 
-                </p>
-                <p>
-                    <label class="field" for="coRoom">Room</label>
-                    <input type="text" name="coRoom" id="coRoom" class="textbox-150" value="<?php echo $coRoom; ?>" style="<?php echo $coRoomError; ?>"/>
-
-                </p>
-                <p>
-                    <label class="field" for="coNotes">Notes</label>
-                    <textarea  name="coNotes" id="coNotes" class="textbox-150"><?php echo $coNotes; ?></textarea>
                 </p>
             </div>
         </fieldset>
         <div class="fieldSet">
             <fieldset>
-                <legend>Asset Check-Out Details</legend>
+                <legend>Inventory Details</legend>
                 <table id="checkDetails">
                     <thead>
                         <tr>
                             <th class="input-100">Barcode</th>
-                            <th class="input-500">Details</th>                            
+                            <th class="input-500">Details</th> 
+                            <th class="input-100">Remove</th>  
                         </tr>
                     </thead>
                     <tbody>
@@ -58,10 +74,14 @@
                             echo "<tr class = 'row'>
                                 <td class='checkDetailBarcode'>
                                     <input type='text' name='barcode[]' id='barcode' class='input-100' value='$barcode[$x]' "
-                            . "onchange='showInfo(this.value, \"data$x\" )' </td>
+                            . "onchange='showInfo(this.value, \"data$x\" )' />
+                                </td>
                                 <td class='input-500' id='data$x'>$data[$x]</td>
+                                <td class='input-100'>
+                                   <input type='checkbox' name='remove[]' id='remove' class='input-100' value='$remove[$x]' />
+                                </td>
                             </tr>";
-                        };
+                        }
                         ?>
 
                     </tbody>
@@ -71,7 +91,8 @@
             </fieldset>
         </div>
     </div>
-    <input type="submit" value="Check Out">
+    <input type="submit" value="Update">
+    <input type="reset" value="Cancel">
 </form>
 <script>
     $("#pageTitle").text("Asset Inventory");
