@@ -16,14 +16,14 @@ if ($dbSuccess) {
 
     if ($_SERVER["REQUEST_METHOD"] === "GET") {
         //select barcode
-     /*   if (isset($_GET["room"]) && strlen(clean_input($_GET["room"]) > 0)) {
-            $barcode[0] = clean_input($_GET["barcode"]);
-            $data[0] = getAssetInfo($dbSelected, $barcode[0]);
+       if (isset($_GET["room"]) && strlen(clean_input($_GET["room"]) > 0)) {
+            $room = clean_input($_GET["room"]);
+          //  $data[0] = getAssetInfo($dbSelected, $barcode[0]);
             //populate data based on what is already their
       
           }
-      * 
-      */
+      
+      
     }
     if ($_SERVER["REQUEST_METHOD"] === "POST") {
         // if(isset(filter_input(INPUT_POST,'barcode[]',FILTER_SANITIZE_SPECIAL_CHARS)))
@@ -49,13 +49,14 @@ if ($dbSuccess) {
                     <input type="text" name="room" id="room" class="textbox-150" value="<?php echo $room; ?>" style="<?php echo $coRoomError; ?>"/>
                 </p>
             </div>
-            <div class="column2">
+     <!--       <div class="column2">
                 <p>
                     <label class="field" for="person">Person</label>
                     <input type="text" name="person" id="person" class="textbox-150" value="<?php echo $person; ?>" style="<?php echo $coPersonError; ?>"/>
 
                 </p>
             </div>
+     -->
         </fieldset>
         <div class="fieldSet">
             <fieldset>
