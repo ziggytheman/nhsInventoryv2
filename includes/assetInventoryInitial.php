@@ -36,13 +36,14 @@ if ($dbSuccess) {
                 <input type="text" name="room" id="room" class="textbox-150" value="<?php echo $room; ?>" style="<?php echo $coRoomError; ?>"/>
             </p>
         </div>
-        <div class="column2">
+    <!--    <div class="column2">
             <p>
                 <label class="field" for="person">Person</label>
                 <input type="text" name="person" id="person" class="textbox-150" value="<?php echo $person; ?>" style="<?php echo $coPersonError; ?>"/>
 
             </p>
         </div>
+    -->
     </fieldset>
     <input type="submit" value="Go">
 </form>

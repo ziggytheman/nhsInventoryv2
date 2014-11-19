@@ -21,6 +21,3 @@ if ($row = mysqli_fetch_array($result)) {
 } else {
     echo '<span class="error">Item Not Found</span>';
 }
-?>
-
-select `nhs_inventory`.`nhi_asset`.`ass_dps_barcode` AS `Barcode`,concat(`nhs_inventory`.`nhi_asset`.`ass_type`,' ',`nhs_inventory`.`nhi_asset`.`ass_model`) AS `Details`,`nhs_inventory`.`nhi_asset`.`ass_location` AS `Location` from `nhs_inventory`.`nhi_asset` order by `nhs_inventory`.`nhi_asset`.`ass_location`,`nhs_inventory`.`nhi_asset`.`ass_dps_barcode`
