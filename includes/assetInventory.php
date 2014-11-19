@@ -10,7 +10,7 @@ $styleError = "background-color:red;border-color:red";
 $barcode = array_fill(0, 10, "");
 $data = array_fill(0, 10, "");
 $remove = array_fill(0, 10, "");
-$room = $person = "";
+$room = $person = ""; 
 
 if ($dbSuccess) {
 
