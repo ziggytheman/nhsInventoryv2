@@ -4,7 +4,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-$errorMsg = "";
+//$errorMsg = "";
 $returnMsg = "Enter Room Information";
 include('includes/fn_insert_validations.php');
 include('includes/fn_isRoomValid.php');

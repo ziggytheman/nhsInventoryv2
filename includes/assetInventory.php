@@ -4,62 +4,67 @@ include('includes/fn_isCheckout.php');
 include('includes/fn_doesExist.php');
 include('includes/fn_getAssetInfo.php');
 include('includes/fn_getCount.php');
-$returnMsg = "Enter Room ";
+include('includes/fn_ValidateDetails.php');
+include('includes/fn_UpdateDetails.php');
+$returnMsg = "Enter Room Details ";
 
 $styleError = "background-color:red;border-color:red";
 $barcode = array_fill(0, 10, "");
 $details = array_fill(0, 10, "");
-$remove = array_fill(0, 10, "");
-$confirm = array_fill(0, 10, "");
-$room = $person = "";
+
+$room = "";
+$timeFrame = "Fall-2014";
+$hasError = false;
+echo "haserror initial ==>" .$hasError ."<==";
 
 if ($dbSuccess) {
 
     if ($_SERVER["REQUEST_METHOD"] === "GET") {
         $room = filter_input(INPUT_GET, 'room', FILTER_SANITIZE_SPECIAL_CHARS);
+    }
 
-        // if (isset($_GET["room"]) && strlen(clean_input($_GET["room"]) > 0))
-        {
-            $room = filter_input(INPUT_GET, 'room', FILTER_SANITIZE_SPECIAL_CHARS);
-            //  $data[0] = getAssetInfo($dbSelected, $barcode[0]);
-            //populate data based on what is already their
-            //get items in room
-            $SQLselect = "Select * ";
-            $SQLselect .= "FROM vassetsbyroom ";
-            $SQLselect .= "WHERE Location = '$room' ";
+    if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
-            $SQLselect_Query = mysqli_query($dbSelected, $SQLselect);
+        $room = filter_input(INPUT_POST, 'room', FILTER_SANITIZE_SPECIAL_CHARS);
+        //  $barcodeTemp = filter_input(INPUT_POST, 'barcode', FILTER_SANITIZE_SPECIAL_CHARS);
+        $barcodeTemp = ($_POST['barcode']);
 
-            $rowCount = 0;
-            while ($row = mysqli_fetch_assoc($SQLselect_Query)) {
-                foreach ($row as $idx => $r) {
-                    if ($idx === "Barcode") {
-                        $r = str_pad($r, 10, "0", STR_PAD_LEFT);
-                        $barcode[$rowCount] = $r;
-                    } elseif ($idx === "Details") {
-                        $details[$rowCount] = $r;
+        $barcode = array_values(array_unique($barcodeTemp));
+
+        for ($x = count($barcode); $x < 10; $x++) {
+            array_push($barcode, "");
+        }
+        if (getCount($barcode) > 0) {
+            for ($x = 0; $x < count($barcode); $x++) {
+                if (strlen($barcode[$x]) > 0) {
+                    $details[$x] = getAssetInfo($dbSelected, $barcode[$x]);
+                    if (!doesExist($dbSelected, $barcode[$x])) {
+                        // we have an error  
+                        $errorMsg .= "Check Details for error information; ";
+                        $hasError = TRUE;
                     }
                 }
-                $rowCount++;
+            }
+        }
+
+        //$haserror = validateDetails($dbSelected, $barcode);
+        if (!$hasError) {
+     
+            $hasError = updateDetails($dbSelected, $barcode, $room, $timeFrame);
+            echo "after UD -->" . $hasError ."<--";
+            
+            if (!$hasError) {
+                echo " No Error after Update";
+                $statusMsg = " Update successful";
+                header("Location: index.php?content=assetInventoryInitial");
+            } else {
+                $errorMsg = " Error ";
+                $statusMsg = " Error ";
+                 echo " Error after Update";
             }
         }
     }
-    if ($_SERVER["REQUEST_METHOD"] === "POST") {
-        // if(isset(filter_input(INPUT_POST,'barcode[]',FILTER_SANITIZE_SPECIAL_CHARS)))
-        $room = filter_input(INPUT_POST, 'room', FILTER_SANITIZE_SPECIAL_CHARS);
-        $barcode = filter_input(INPUT_POST, 'barcode', FILTER_SANITIZE_SPECIAL_CHARS);
-        $details = filter_input(INPUT_POST, 'details', FILTER_SANITIZE_SPECIAL_CHARS);
-        $confirm = filter_input(INPUT_POST, 'confirm', FILTER_SANITIZE_SPECIAL_CHARS);
-        $checked = filter_input(INPUT_POST, 'checked', FILTER_SANITIZE_SPECIAL_CHARS);
-echo " here ";
-        print_r($barcode);
-        print_r($details);
-        print_r($confirm);
-        print_r($checked);
-
-
-        $hasError = FALSE;
-    }
+    //print_r(get_defined_vars());
 }
 ?>
 
@@ -70,17 +75,9 @@ echo " here ";
             <div class="column1">
                 <p>
                     <label class="field" for="room">Room</label>
-                    <input type="text" name="room" id="room" class="textbox-150" value="<?php echo $room; ?>" style="<?php echo $coRoomError; ?>"/>
+                    <input type="text" name="room" id="room" class="textbox-150" readonly value="<?php echo $room; ?>"/>
                 </p>
             </div>
-            <!--       <div class="column2">
-                       <p>
-                           <label class="field" for="person">Person</label>
-                           <input type="text" name="person" id="person" class="textbox-150" value="<?php echo $person; ?>" style="<?php echo $coPersonError; ?>"/>
-       
-                       </p>
-                   </div>
-            -->
         </fieldset>
         <div class="fieldSet">
             <fieldset>
@@ -90,31 +87,23 @@ echo " here ";
                         <tr>
                             <th class="input-100">Barcode</th>
                             <th class="input-500">Details</th>
-                            <th class="input-100">Confirm</th>
+
 
                         </tr>
                     </thead>
                     <tbody>
-                        <?php
-                        for ($x = 0; $x < count($barcode); $x++) {
-                            $checked[$x] = "no";
-                            if (strlen($barcode[$x]) > 0) {
-                                $checked[$x] = "checked";
-                            }
-                            echo "<tr class = 'row'>
+<?php
+for ($x = 0; $x < count($barcode); $x++) {
+
+    echo "<tr class = 'row'>
                                 <td class='checkDetailBarcode'>
                                     <input type='text' name='barcode[]' id='barcode' class='input-100' value='$barcode[$x]' "
-                            . "onchange='showInfo(this.value, \"details$x\" )' />
+    . "onchange='showInfo(this.value, \"details$x\" )' />
                                 </td>
                                 <td class='input-500' id='details$x'>$details[$x]</td>
-                                <td class='input-100'>
-                                   <input type='radio' name='confirm$x' id='confirm$x'  value='yes' $checked[$x]>Yes
-                                   <input type='radio' name='confirm$x' id='confirm$x'  value='no'>No                       
-                            
-                                </td>
                             </tr>";
-                        }
-                        ?>
+}
+?>
 
                     </tbody>
                 </table>
@@ -127,7 +116,7 @@ echo " here ";
     <input type="reset" value="Cancel">
 </form>
 <script>
-    $("#pageTitle").text("Asset Inventory");
+    $("#pageTitle").text("Asset Inventory Details");
 </script>
 
 <script>

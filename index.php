@@ -177,6 +177,7 @@ if ($dbSuccess) {
 
     <footer>
         <div id="message">
+            <p><span id="statusMsg"></span></p>
             <p><span id="errorMsg"></span></p>
         </div>
     </footer><!-- end footer -->
@@ -186,6 +187,10 @@ if ($dbSuccess) {
 <script>
     $(document).ready(function () {
         document.getElementById('returnMsg').innerHTML = "<?php echo $returnMsg; ?>";
-        document.getElementById('errorMsg').innerHTML = "<?php echo $errorMsg; ?>";
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        document.getElementById('statusMsg').innerHTML = "<?php echo $statusMsg; ?>";
     });
 </script>

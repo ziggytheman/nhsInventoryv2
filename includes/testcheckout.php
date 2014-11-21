@@ -55,34 +55,6 @@ if ($dbSuccess) {
         if (strlen($coNameError) > 0) {
             $returnMsg .= $coNameErrorMsg . "; ";
         }
-/*
-        if (empty($coTelephone)) {
-            $coTelephoneError = $styleError;
-            $coTelephoneErrorMsg = " Enter Phone";
-            $hasError = TRUE;
-        }
-        if (strlen($coTelephoneError) > 0) {
-            $returnMsg .= $coTelephoneErrorMsg . "; ";
-        }
-
-        if (empty($coEmail)) {
-            $coEmailError = $styleError;
-            $coEmailErrorMsg = " Enter Email";
-            $hasError = TRUE;
-        }
-        if (strlen($coEmailError) > 0) {
-            $returnMsg .= $coEmailErrorMsg . "; ";
-        }
-
-        if (empty($coRoom)) {
-            $coRoomError = $styleError;
-            $coRoomErrorMsg = " Enter Room";
-            $hasError = TRUE;
-        }
-        if (strlen($coRoomError) > 0) {
-            $returnMsg .= $coRoomErrorMsg . "; ";
-        }
-		*/
         //Process each barcode to make sure they exist and are available for checkout; set error condition if that is the case
         // echo "</br> count " . count($barcode) . " </br>";
         //remove duplicates
