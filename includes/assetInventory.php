@@ -6,8 +6,11 @@ include('includes/fn_getAssetInfo.php');
 include('includes/fn_getCount.php');
 include('includes/fn_ValidateDetails.php');
 include('includes/fn_UpdateDetails.php');
-$returnMsg = "Enter Room Details ";
+include('includes/fn_isInventoryed.php');
 
+$returnMsg = "Enter Room Details ";
+$_SESSION["errorMsg"] = "";
+$_SESSION["statusMsg"] = "";
 $styleError = "background-color:red;border-color:red";
 $barcode = array_fill(0, 10, "");
 $details = array_fill(0, 10, "");
@@ -15,7 +18,6 @@ $details = array_fill(0, 10, "");
 $room = "";
 $timeFrame = "Fall-2014";
 $hasError = false;
-echo "haserror initial ==>" .$hasError ."<==";
 
 if ($dbSuccess) {
 
@@ -37,8 +39,8 @@ if ($dbSuccess) {
         if (getCount($barcode) > 0) {
             for ($x = 0; $x < count($barcode); $x++) {
                 if (strlen($barcode[$x]) > 0) {
-                    $details[$x] = getAssetInfo($dbSelected, $barcode[$x]);
-                    if (!doesExist($dbSelected, $barcode[$x])) {
+                    $details[$x] = getAssetInfo2($dbSelected, $barcode[$x]);
+                    if (!doesExist($dbSelected, $barcode[$x]) or isInventoryed($dbSelected, $barcode[$x])) {
                         // we have an error  
                         $errorMsg .= "Check Details for error information; ";
                         $hasError = TRUE;
@@ -49,18 +51,15 @@ if ($dbSuccess) {
 
         //$haserror = validateDetails($dbSelected, $barcode);
         if (!$hasError) {
-     
             $hasError = updateDetails($dbSelected, $barcode, $room, $timeFrame);
-            echo "after UD -->" . $hasError ."<--";
-            
-            if (!$hasError) {
-                echo " No Error after Update";
-                $statusMsg = " Update successful";
+                        if (!$hasError) {
+
+                $_SESSION["statusMsg"] = " Update successful";
                 header("Location: index.php?content=assetInventoryInitial");
             } else {
-                $errorMsg = " Error ";
-                $statusMsg = " Error ";
-                 echo " Error after Update";
+                $_SESSION["errorMsg"] = " Error ";
+                $_SESSION["statusMsg"] = " Error ";
+                echo " Error after Update";
             }
         }
     }
@@ -92,18 +91,18 @@ if ($dbSuccess) {
                         </tr>
                     </thead>
                     <tbody>
-<?php
-for ($x = 0; $x < count($barcode); $x++) {
+                        <?php
+                        for ($x = 0; $x < count($barcode); $x++) {
 
-    echo "<tr class = 'row'>
+                            echo "<tr class = 'row'>
                                 <td class='checkDetailBarcode'>
                                     <input type='text' name='barcode[]' id='barcode' class='input-100' value='$barcode[$x]' "
-    . "onchange='showInfo(this.value, \"details$x\" )' />
+                            . "onchange='showInfo(this.value, \"details$x\" )' />
                                 </td>
                                 <td class='input-500' id='details$x'>$details[$x]</td>
                             </tr>";
-}
-?>
+                        }
+                        ?>
 
                     </tbody>
                 </table>

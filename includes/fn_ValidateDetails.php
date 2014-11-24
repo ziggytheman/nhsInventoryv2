@@ -5,7 +5,6 @@ function validateDetails($dbSelected,$barcode) {
     $haserror = false;
     $x = 0;
     while(!$haserror and $x < count($barcode) and strlen($barcode[$x]>0)){
-        echo " in VD BC is " .$barcode[$x];
         $haserror = !doesExist($dbSelected,$barcode[$x]);
         $x++;
     }

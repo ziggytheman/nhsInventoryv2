@@ -15,18 +15,17 @@ include('htconfig/dbConfig.php');
 include('includes/dbaccess.php');
 //	END	Secure Connection Script
 
-
+$errorMsg = $_SESSION['errorMsg'];
+$statusMsg = $_SESSION['statusMsg'];
+$_SESSION['errorMsg'] = "";
+$_SESSION['statusMsg'] = "";
 if ($dbSuccess) {
     include_once('includes/fn_authorise.php');
-    //   include_once('includes/fn_strings.php');
-    //   include_once('includes/fn_formatting.php');
-    //  include_once('includes/fn_eMailLog.php');
 
     $menuFile = '';
     $contentFile = '';
     $contentMsg = '';
 
-    //$loginAuthorised = ($_COOKIE["loginAuthorised"] == "loginAuthorised");
     $loginAuthorised = filter_input(INPUT_COOKIE, 'loginAuthorised', FILTER_SANITIZE_SPECIAL_CHARS);
 
     if ($loginAuthorised) {
@@ -119,6 +118,7 @@ if ($dbSuccess) {
 } else {
     $contentMsg = 'No database connection.';
 }
+
 ?>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
@@ -190,7 +190,14 @@ if ($dbSuccess) {
     });
 </script>
 <script>
+    
     $(document).ready(function () {
         document.getElementById('statusMsg').innerHTML = "<?php echo $statusMsg; ?>";
+    });
+</script>
+
+<script>
+    $(document).ready(function () {
+        document.getElementById('errorMsg').innerHTML = "<?php echo $errorMsg; ?>";
     });
 </script>

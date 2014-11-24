@@ -9,6 +9,10 @@ include('includes/fn_insert_validations.php');
 $errorMsg ="";
 //$returnMsg = "Enter Barcode to search";
 $returnMsg = "";
+$errorMsg = $_SESSION['errorMsg'];
+$statusMsg = $_SESSION['statusMsg'];
+$_SESSION['errorMsg'] = "";
+$_SESSION['statusMsg'] = "";
 if ($dbSuccess) {
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
         //select barcode
