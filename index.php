@@ -14,11 +14,24 @@
 include('htconfig/dbConfig.php');
 include('includes/dbaccess.php');
 //	END	Secure Connection Script
+if(isset($_SESSION['errorMsg'])) {
+    $errorMsg = $_SESSION['errorMsg'];
+}  else {
+    $errorMsg="";
+}
 
-$errorMsg = $_SESSION['errorMsg'];
-$statusMsg = $_SESSION['statusMsg'];
-$_SESSION['errorMsg'] = "";
-$_SESSION['statusMsg'] = "";
+if(isset($_SESSION['statusMsg'])) {
+    $statusMsg = $_SESSION['statusMsg'];
+} else{
+    $statusMsg="";
+}
+
+if(isset($_SESSION['returnMsg'])) {
+    $returnMsg = $_SESSION['returnMsg'];
+} else{
+    $returnMsg="";
+}
+
 if ($dbSuccess) {
     include_once('includes/fn_authorise.php');
 

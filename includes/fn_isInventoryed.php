@@ -6,14 +6,14 @@ function isInventoryed($dbSelected, $barcode) {
     $SQLselect .= "AND  dtl_barcode = '" . $barcode . "'";
 
     $SQLselect_Query = mysqli_query($dbSelected, $SQLselect);
-    print_r($SQLselect);
+    //print_r($SQLselect);
     
     if ($row = mysqli_fetch_assoc($SQLselect_Query)) {
         print_r($row);
         return TRUE;
         
     } else {
-        print_r("NOT FOUND");
+       // print_r("NOT FOUND");
         return FALSE;
         
     }
