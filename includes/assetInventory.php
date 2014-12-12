@@ -14,6 +14,10 @@ $_SESSION["statusMsg"] = "";
 $styleError = "background-color:red;border-color:red";
 $barcode = array_fill(0, 10, "");
 $details = array_fill(0, 10, "");
+$totalRows = 0;
+$done = "";
+$checked="";
+$autofocus="";
 
 $room = "";
 $timeFrame = "Fall-2014";
@@ -28,6 +32,16 @@ if ($dbSuccess) {
     if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
         $room = filter_input(INPUT_POST, 'room', FILTER_SANITIZE_SPECIAL_CHARS);
+        $done = filter_input(INPUT_POST, 'done', FILTER_SANITIZE_SPECIAL_CHARS);
+        
+        if($done === "yes"){
+           $checked = "checked";
+        } else{
+            $checked="";
+        }
+        
+        //print_r("Done -->".$done.'</br>');
+        //print_r("Checked -->".$checked.'</br>');
         //  $barcodeTemp = filter_input(INPUT_POST, 'barcode', FILTER_SANITIZE_SPECIAL_CHARS);
         $barcodeTemp = ($_POST['barcode']);
 
@@ -50,7 +64,7 @@ if ($dbSuccess) {
         }
 
         //$haserror = validateDetails($dbSelected, $barcode);
-        if (!$hasError) {
+        if (!$hasError && $done ==='yes') {
             $hasError = updateDetails($dbSelected, $barcode, $room, $timeFrame);
                         if (!$hasError) {
 
@@ -77,6 +91,12 @@ if ($dbSuccess) {
                     <input type="text" name="room" id="room" class="textbox-150" readonly value="<?php echo $room; ?>"/>
                 </p>
             </div>
+            <div class="column2">
+                <p>
+                    <label class="field" for="room">Done</label>
+                    <input type="checkbox" name="done" id="done" class="textbox-150" value='yes' <?php echo $checked;?>/>
+                </p>
+            </div>
         </fieldset>
         <div class="fieldSet">
             <fieldset>
@@ -93,11 +113,17 @@ if ($dbSuccess) {
                     <tbody>
                         <?php
                         for ($x = 0; $x < count($barcode); $x++) {
-
-                            echo "<tr class = 'row'>
+                             if($x===0){
+                                 $autofocus="autofocus";
+                                 
+                             } else{
+                                 $autofocus ="";
+                             }
+                                 
+                             echo "<tr class = 'row'>
                                 <td class='checkDetailBarcode'>
                                     <input type='text' name='barcode[]' id='barcode' class='input-100' value='$barcode[$x]' "
-                            . "onchange='showInfo(this.value, \"details$x\" )' />
+                            . "onchange='showInfo(this.value, \"details$x\" )' $autofocus/>
                                 </td>
                                 <td class='input-500' id='details$x'>$details[$x]</td>
                             </tr>";
@@ -113,6 +139,7 @@ if ($dbSuccess) {
     </div>
     <input type="submit" value="Update">
     <input type="reset" value="Cancel">
+    <input type="button" value="Add">
 </form>
 <script>
     $("#pageTitle").text("Asset Inventory Details");
