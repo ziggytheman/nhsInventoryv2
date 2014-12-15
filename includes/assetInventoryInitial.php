@@ -6,14 +6,19 @@
  */
 //$errorMsg = "";
 $returnMsg = "Enter Room Information";
+$_SESSION['returnMsg'] = "Enter Room Information";
 //$_SESSION['errorMsg'] = "default";
 //$_SESSION['statusMsg'] = "";
-$errorMsg = "";
-$statusMsg ="";
+//$errorMsg = $_SESSION['errorMsg'];
+//$statusMsg =$_SESSION['statusMsg'];
+//$errorMsg = $statusMsg ="";
+//$statusMsg =$_SESSION['statusMsg'];
+
 
 include('includes/fn_insert_validations.php');
 include('includes/fn_isRoomValid.php');
 include('includes/fn_createRoomDropDown.php');
+include('includes/common_message_handler.php');
 
 $room = $person = $roomError = "";
 $roomOption = createRoomDropDown($dbSelected);
@@ -33,28 +38,27 @@ if ($dbSuccess) {
       }
       }
      */
-    
+
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
         //$room = filter_input('INPUT_POST','room', FILTER_SANITIZE_SPECIAL_CHARS);
         $room = strtoupper(filter_input(INPUT_POST, 'room', FILTER_SANITIZE_SPECIAL_CHARS));
-    //    print_r("Room -->" . $room . '</br>');
+        //    print_r("Room -->" . $room . '</br>');
 
         if (strlen($room) > 0) {
             if (isRoomValid($dbSelected, $room)) {
                 header("Location: index.php?content=assetInventory&room=$room");
             } else {
-            //    $_SESSION['errorMsg'] = "Room not found";
+                //    $_SESSION['errorMsg'] = "Room not found";
                 $errorMsg = "Room not found";
             }
         } else {
 //            $_SESSION['errorMsg'] = "Enter a Room" . $_SESSION['debugx'];
 //            print_r("Error Enter a Room Session value --> " . $_SESSION['errorMsg'] . '<--</br>');
 //            $_SESSION['debugx'] ++;
-            $errorMsg ="Enter a Room";
+            $errorMsg = "Enter a Room";
         }
     }
 }
-
 ?>
 
 <form method="post" action="index.php?content=assetInventoryInitial" >

@@ -1,11 +1,5 @@
 <?php
 
-/* 
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 function createRoomDropDown($dbSelected) {
 //create condition value dropdown values
     $tSQLselect = "SELECT ";
@@ -18,11 +12,11 @@ function createRoomDropDown($dbSelected) {
     $tSQLselect_Query = mysqli_query($dbSelected, $tSQLselect);
 
     $DropDown = "";
-    $DropDown .= " <option value=\"\"> </option>\n";
+    $DropDown .= " <option value=\"\">\n";
     while ($row = mysqli_fetch_assoc($tSQLselect_Query)) {
 
         foreach ($row as $idx => $r) {
-            $DropDown .= "              <option value=\"$r\"></option>\n";
+            $DropDown .= "                     <option value=\"$r\">\n";
         }
     }
     mysqli_free_result($tSQLselect_Query);

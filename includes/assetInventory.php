@@ -8,9 +8,8 @@ include('includes/fn_ValidateDetails.php');
 include('includes/fn_UpdateDetails.php');
 include('includes/fn_isInventoryed.php');
 
-$returnMsg = "Enter Room Details ";
-$errorMsg = "";
-$statusMsg = "";
+$_SESSION['returnMsg'] = "Enter Room Details ";
+
 //$_SESSION["errorMsg"] = "";
 //$_SESSION["statusMsg"] = "";
 $styleError = "background-color:red;border-color:red";
@@ -21,17 +20,19 @@ $done = "";
 $checked = "";
 $autofocus = "";
 $rowX = 10;
-
-
+$gotOne = false;
 
 $room = "";
 $timeFrame = "Fall-2014";
 $hasError = false;
 
+include('includes/common_message_handler.php');
 if ($dbSuccess) {
 
     if ($_SERVER["REQUEST_METHOD"] === "GET") {
         $room = filter_input(INPUT_GET, 'room', FILTER_SANITIZE_SPECIAL_CHARS);
+        $errorMsg = "";
+        $statusMsg = "";
     }
 
     if ($_SERVER["REQUEST_METHOD"] === "POST") {
@@ -69,6 +70,7 @@ if ($dbSuccess) {
         if (getCount($barcode) > 0) {
             for ($x = 0; $x < count($barcode); $x++) {
                 if (strlen($barcode[$x]) > 0) {
+                    $gotOne = true;
                     $details[$x] = getAssetInfo2($dbSelected, $barcode[$x]);
                     if (!doesExist($dbSelected, $barcode[$x]) or isInventoryed($dbSelected, $barcode[$x])) {
                         // we have an error
@@ -84,19 +86,25 @@ if ($dbSuccess) {
         }
 
         //$haserror = validateDetails($dbSelected, $barcode);
-        if (!$hasError && $done === 'yes') {
-            $hasError = updateDetails($dbSelected, $barcode, $room, $timeFrame);
+        if(!$gotOne){
+             $errorMsg .= " Please enter inventory data; ";
+        }
+        
+        if ($done === 'yes' && $gotOne) {
             if (!$hasError) {
+                $hasError = updateDetails($dbSelected, $barcode, $room, $timeFrame);
+                if (!$hasError) {
 
-                $_SESSION["statusMsg"] = " Update successful";
-                $statusMsg = "Update sucessful";
-                header("Location: index.php?content=assetInventoryInitial");
-            } else {
-                $_SESSION["errorMsg"] = " Error ";
-                $_SESSION["statusMsg"] = " Error ";
-                $errorMsg = "Update error";
-                $statusMsg = "Update Error";
-                echo " Error after Update";
+                    $_SESSION["statusMsg"] = " Update successful";
+                    $statusMsg = "Update sucessful";
+                    header("Location: index.php?content=assetInventoryInitial");
+                } else {
+                    $_SESSION["errorMsg"] = " Error ";
+                    $_SESSION["statusMsg"] = " Error ";
+                    $errorMsg = "Update error";
+                    $statusMsg = "Update Error";
+                    echo " Error after Update";
+                }
             }
         }
     }
@@ -136,7 +144,7 @@ if ($dbSuccess) {
                     <tbody>
                         <?php
                         for ($x = 0; $x < count($barcode); $x++) {
-                            if ($x === 0) {
+                            if (strlen($barcode[$x]) === 0) {
                                 $autofocus = "autofocus";
                             } else {
                                 $autofocus = "";
@@ -159,14 +167,14 @@ if ($dbSuccess) {
             </fieldset>
         </div>
     </div>
-    <input type="submit" value="Update">
-    <input type="reset" value="Cancel">
+    <input type="submit" id="update" value="Update">
+    <input type="reset" id="cancel" value="Cancel">
     <input type="button" id="addRow" value="Add"> 
 </form>
+
 <script>
     $("#addRow").click(function (event) {
         event.preventDefault();
-        //$rowX = '<?php echo count($barcode); ?>';
         $rowX = $('.row').size();
         $("tbody tr:last").after("<tr class = 'row'> <td class='checkDetailBarcode'>" +
                 "<input type='text' name='barcode[]' id='barcode' class='input-100' value=''" +
@@ -175,6 +183,10 @@ if ($dbSuccess) {
                 "<td class='input-500' id='details" + $rowX + "'>" +
                 "</td></tr>");
         '<?php array_push($barcode, ""); ?>';
+
+    });
+    $("#update").click(function (event) {
+
 
     });
 </script>

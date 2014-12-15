@@ -26,7 +26,7 @@ function getAssetInfo2($dbSelected, $barcode) {
     $tasset_SQLselect = "Select ass_type, ass_model ";
     $tasset_SQLselect .= "FROM nhi_asset ";
     $tasset_SQLselect .= "WHERE ass_dps_barcode = $barcode ";
-print_r($tasset_SQLselect);
+
     $tasset_SQLselect_Query = mysqli_query($dbSelected, $tasset_SQLselect);
 
     $temp = "";
