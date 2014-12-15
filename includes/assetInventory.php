@@ -9,15 +9,20 @@ include('includes/fn_UpdateDetails.php');
 include('includes/fn_isInventoryed.php');
 
 $returnMsg = "Enter Room Details ";
-$_SESSION["errorMsg"] = "";
-$_SESSION["statusMsg"] = "";
+$errorMsg = "";
+$statusMsg = "";
+//$_SESSION["errorMsg"] = "";
+//$_SESSION["statusMsg"] = "";
 $styleError = "background-color:red;border-color:red";
 $barcode = array_fill(0, 10, "");
 $details = array_fill(0, 10, "");
 $totalRows = 0;
 $done = "";
-$checked="";
-$autofocus="";
+$checked = "";
+$autofocus = "";
+$rowX = 10;
+
+
 
 $room = "";
 $timeFrame = "Fall-2014";
@@ -33,30 +38,45 @@ if ($dbSuccess) {
 
         $room = filter_input(INPUT_POST, 'room', FILTER_SANITIZE_SPECIAL_CHARS);
         $done = filter_input(INPUT_POST, 'done', FILTER_SANITIZE_SPECIAL_CHARS);
-        
-        if($done === "yes"){
-           $checked = "checked";
-        } else{
-            $checked="";
+
+        if ($done === "yes") {
+            $checked = "checked";
+        } else {
+            $checked = "";
         }
-        
+
         //print_r("Done -->".$done.'</br>');
         //print_r("Checked -->".$checked.'</br>');
         //  $barcodeTemp = filter_input(INPUT_POST, 'barcode', FILTER_SANITIZE_SPECIAL_CHARS);
         $barcodeTemp = ($_POST['barcode']);
 
-        $barcode = array_values(array_unique($barcodeTemp));
+        $barcodeInitial = array_values(array_unique($barcodeTemp));
+
+        $x = 0;
+        $barcode = array();
+        while ($x < count($barcodeInitial)) {
+            if (strlen($barcodeInitial[$x]) > 0) {
+                array_push($barcode, $barcodeInitial[$x]);
+            }
+            $x++;
+        };
 
         for ($x = count($barcode); $x < 10; $x++) {
             array_push($barcode, "");
         }
+
+        $rowX = count($barcode);
         if (getCount($barcode) > 0) {
             for ($x = 0; $x < count($barcode); $x++) {
                 if (strlen($barcode[$x]) > 0) {
                     $details[$x] = getAssetInfo2($dbSelected, $barcode[$x]);
                     if (!doesExist($dbSelected, $barcode[$x]) or isInventoryed($dbSelected, $barcode[$x])) {
-                        // we have an error  
-                        $errorMsg .= "Check Details for error information; ";
+                        // we have an error
+
+                        if (!(strpos($errorMsg, 'Check Details for error information; ') > -1)) {
+                            $errorMsg .= "Check Details for error information; ";
+                        }
+
                         $hasError = TRUE;
                     }
                 }
@@ -64,15 +84,18 @@ if ($dbSuccess) {
         }
 
         //$haserror = validateDetails($dbSelected, $barcode);
-        if (!$hasError && $done ==='yes') {
+        if (!$hasError && $done === 'yes') {
             $hasError = updateDetails($dbSelected, $barcode, $room, $timeFrame);
-                        if (!$hasError) {
+            if (!$hasError) {
 
                 $_SESSION["statusMsg"] = " Update successful";
+                $statusMsg = "Update sucessful";
                 header("Location: index.php?content=assetInventoryInitial");
             } else {
                 $_SESSION["errorMsg"] = " Error ";
                 $_SESSION["statusMsg"] = " Error ";
+                $errorMsg = "Update error";
+                $statusMsg = "Update Error";
                 echo " Error after Update";
             }
         }
@@ -94,7 +117,7 @@ if ($dbSuccess) {
             <div class="column2">
                 <p>
                     <label class="field" for="room">Done</label>
-                    <input type="checkbox" name="done" id="done" class="textbox-150" value='yes' <?php echo $checked;?>/>
+                    <input type="checkbox" name="done" id="done" class="textbox-150" value='yes' <?php echo $checked; ?>/>
                 </p>
             </div>
         </fieldset>
@@ -113,14 +136,13 @@ if ($dbSuccess) {
                     <tbody>
                         <?php
                         for ($x = 0; $x < count($barcode); $x++) {
-                             if($x===0){
-                                 $autofocus="autofocus";
-                                 
-                             } else{
-                                 $autofocus ="";
-                             }
-                                 
-                             echo "<tr class = 'row'>
+                            if ($x === 0) {
+                                $autofocus = "autofocus";
+                            } else {
+                                $autofocus = "";
+                            }
+
+                            echo "<tr class = 'row'>
                                 <td class='checkDetailBarcode'>
                                     <input type='text' name='barcode[]' id='barcode' class='input-100' value='$barcode[$x]' "
                             . "onchange='showInfo(this.value, \"details$x\" )' $autofocus/>
@@ -139,8 +161,23 @@ if ($dbSuccess) {
     </div>
     <input type="submit" value="Update">
     <input type="reset" value="Cancel">
-    <input type="button" value="Add">
+    <input type="button" id="addRow" value="Add"> 
 </form>
+<script>
+    $("#addRow").click(function (event) {
+        event.preventDefault();
+        //$rowX = '<?php echo count($barcode); ?>';
+        $rowX = $('.row').size();
+        $("tbody tr:last").after("<tr class = 'row'> <td class='checkDetailBarcode'>" +
+                "<input type='text' name='barcode[]' id='barcode' class='input-100' value=''" +
+                "onchange='showInfo(this.value, \"details" + $rowX + "\" )' $autofocus/>" +
+                "</td>" +
+                "<td class='input-500' id='details" + $rowX + "'>" +
+                "</td></tr>");
+        '<?php array_push($barcode, ""); ?>';
+
+    });
+</script>
 <script>
     $("#pageTitle").text("Asset Inventory Details");
 </script>

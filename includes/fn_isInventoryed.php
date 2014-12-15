@@ -9,7 +9,7 @@ function isInventoryed($dbSelected, $barcode) {
     //print_r($SQLselect);
     
     if ($row = mysqli_fetch_assoc($SQLselect_Query)) {
-        print_r($row);
+ //       print_r($row);
         return TRUE;
         
     } else {

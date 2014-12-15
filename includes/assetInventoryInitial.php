@@ -6,8 +6,10 @@
  */
 //$errorMsg = "";
 $returnMsg = "Enter Room Information";
-//$_SESSION['errorMsg'] = "";
+//$_SESSION['errorMsg'] = "default";
 //$_SESSION['statusMsg'] = "";
+$errorMsg = "";
+$statusMsg ="";
 
 include('includes/fn_insert_validations.php');
 include('includes/fn_isRoomValid.php');
@@ -17,35 +19,42 @@ $room = $person = $roomError = "";
 $roomOption = createRoomDropDown($dbSelected);
 
 if ($dbSuccess) {
-/*    if ($_SERVER["REQUEST_METHOD"] == "GET") {
+    /*    if ($_SERVER["REQUEST_METHOD"] == "GET") {
 
-        $room = strtoupper(filter_input(INPUT_GET, 'room', FILTER_SANITIZE_SPECIAL_CHARS));
-        if (strlen($room) > 0) {
-            if (isRoomValid($dbSelected, $room)) {
-                header("Location: index.php?content=assetInventory&room=$room");
-            } else {
-                $_SESSION['errorMsg'] = "Room not found";
-            }
-        } else {
-            $_SESSION['errorMsg'] = "Enter a Room2";
-        }
-    }
-*/
+      $room = strtoupper(filter_input(INPUT_GET, 'room', FILTER_SANITIZE_SPECIAL_CHARS));
+      if (strlen($room) > 0) {
+      if (isRoomValid($dbSelected, $room)) {
+      header("Location: index.php?content=assetInventory&room=$room");
+      } else {
+      $_SESSION['errorMsg'] = "Room not found";
+      }
+      } else {
+      $_SESSION['errorMsg'] = "Enter a Room2";
+      }
+      }
+     */
     
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
         //$room = filter_input('INPUT_POST','room', FILTER_SANITIZE_SPECIAL_CHARS);
         $room = strtoupper(filter_input(INPUT_POST, 'room', FILTER_SANITIZE_SPECIAL_CHARS));
+    //    print_r("Room -->" . $room . '</br>');
+
         if (strlen($room) > 0) {
             if (isRoomValid($dbSelected, $room)) {
                 header("Location: index.php?content=assetInventory&room=$room");
             } else {
-                $_SESSION['errorMsg'] = "Room not found";
+            //    $_SESSION['errorMsg'] = "Room not found";
+                $errorMsg = "Room not found";
             }
         } else {
-            $_SESSION['errorMsg'] = "Enter a Room";
+//            $_SESSION['errorMsg'] = "Enter a Room" . $_SESSION['debugx'];
+//            print_r("Error Enter a Room Session value --> " . $_SESSION['errorMsg'] . '<--</br>');
+//            $_SESSION['debugx'] ++;
+            $errorMsg ="Enter a Room";
         }
     }
 }
+
 ?>
 
 <form method="post" action="index.php?content=assetInventoryInitial" >

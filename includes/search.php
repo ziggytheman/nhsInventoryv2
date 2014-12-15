@@ -6,13 +6,15 @@
  */
 include('includes/fn_insert_validations.php');
 
-$errorMsg ="";
+$errorMsg = "";
 //$returnMsg = "Enter Barcode to search";
 $returnMsg = "";
-$errorMsg = $_SESSION['errorMsg'];
-$statusMsg = $_SESSION['statusMsg'];
-$_SESSION['errorMsg'] = "";
-$_SESSION['statusMsg'] = "";
+/*
+  $errorMsg = $_SESSION['errorMsg'];
+  $statusMsg = $_SESSION['statusMsg'];
+  $_SESSION['errorMsg'] = "";
+  $_SESSION['statusMsg'] = "";
+ * */
 if ($dbSuccess) {
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
         //select barcode
@@ -34,16 +36,17 @@ if ($dbSuccess) {
                 header("Location: index.php?content=assetAdd&barcode=$barcode");
             }
             // else display add screen
-        } 
-        else {
+        } else {
             $returnMsg = "Enter a Barcode to search";
         }
+    } else {
+
+        $returnMsg .= " Enter a Barcode to search";
     }
+
     if (($_SERVER["REQUEST_METHOD"] == "GET") && (isset($_GET["returnMsg"]))) {
-         $returnMsg = $_GET["returnMsg"];
-        }
-     $returnMsg .= " Enter a Barcode to search";
-     
+        $returnMsg = $_GET["returnMsg"];
+    }
 }
 ?>
 <form method="post" action="index.php?content=assetSearch" >
@@ -54,12 +57,12 @@ if ($dbSuccess) {
             <p>
                 <label class="field" for="barcode">DPS Barcode</label>
                 <input type="text" name="barcode" id="barcode" class="textbox-300" autofocus/>
-                <span class="error"><?php echo "$errorMsg"?></span>
+                <span class="error"><?php echo "$errorMsg" ?></span>
             </p>
         </fieldset>
     </div>
     <input type="submit" value="Find">
 </form>
 <script>
-	$("#pageTitle").text("Search");
+    $("#pageTitle").text("Search");
 </script>

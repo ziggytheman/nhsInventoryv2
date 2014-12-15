@@ -9,7 +9,7 @@
  * 	===========================================================================
  */
 
-
+include('includes/variable_initialization.php');
 echo '<p>Login Form NHI</p>';
 
 echo '<form name="postLoginHid" action="index.php" method="post">';
