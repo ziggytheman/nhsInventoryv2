@@ -23,7 +23,7 @@ $rowX = 10;
 $gotOne = false;
 
 $room = "";
-$timeFrame = "Fall-2014";
+$timeFrame = $_SESSION['inventory_time'];
 $hasError = false;
 
 include('includes/common_message_handler.php');

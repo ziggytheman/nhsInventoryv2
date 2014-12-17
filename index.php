@@ -62,6 +62,9 @@ if ($dbSuccess) {
                 case "assetInventoryInitial":
                     $contentFile = "includes/assetInventoryInitial.php";
                     break;
+                case "assetInventoryList":
+                    $contentFile = "includes/assetInventoryList.php";
+                    break;
                 case "assetMaintenanceHistory":
                     $contentFile = "includes/mainhistory.php";
                     break;

@@ -7,11 +7,14 @@ $barcodeError = $serialnoError = $locationError = $locationOtherError = "";
 $returnMsg = "Complete form to edit asset";
 $hasBarcode = "Y";
 include('includes/dbaccess.php');
+include('includes/fn_get_location.php');
 if ($dbSuccess) {
     if ($_SERVER["REQUEST_METHOD"] == "GET") {
         $barcode = clean_input($_GET["barcode"]);
         include('includes/common_asset_display.php');
         include('includes/get_checkout_info.php');
+        
+        $location = getLocation($dbSelected,$barcode);
     }
 }
 
@@ -21,6 +24,8 @@ if ($dbSuccess) {
         $barcode = clean_input($_POST["barcode"]);
         $hasBarcode = clean_input($_POST["hasBarcode"]);
         $serialno = clean_input($_POST["serialno"]);
+        
+        echo "before  $location </br>";
         $location = clean_input($_POST["location"]);
         if ($location === "Other") {
             $locationOther = clean_input($_POST["locationOther"]);
@@ -28,6 +33,7 @@ if ($dbSuccess) {
             $locationOther = "";
             $$locationOtherError = "";
         }
+       
         $assetType = clean_input($_POST["assetType"]);
         $make = clean_input($_POST["make"]);
         $serviceTag = clean_input($_POST["serviceTag"]);
