@@ -25,7 +25,7 @@ if ($dbSuccess) {
         $hasBarcode = clean_input($_POST["hasBarcode"]);
         $serialno = clean_input($_POST["serialno"]);
         
-        echo "before  $location </br>";
+       // echo "before  $location </br>";
         $location = clean_input($_POST["location"]);
         if ($location === "Other") {
             $locationOther = clean_input($_POST["locationOther"]);
